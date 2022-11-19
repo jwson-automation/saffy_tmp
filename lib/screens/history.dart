@@ -43,45 +43,55 @@ class _HistoryPageState extends State<HistoryPage> {
             child: Text("기록 남기기"),
             onPressed: () {
               final history = History(
-                email: '${authManage().getUser()!.email}',
-                text: historyController.text,
-              );
+                  email: '${authManage().getUser()!.email}',
+                  text: historyController.text,
+                  timestamp: Timestamp.now());
 
               print(authManage().getUser()!.email);
 
               UploadHistory(history);
             },
           ),
-          StreamBuilder<List<History>>(
-              stream: readUser(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final _history = snapshot.data!;
+          Container(
+            child: StreamBuilder<List<History>>(
+                stream: readUser(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final _history = snapshot.data!;
 
-                  return ListView(
-                    reverse: true,
-                    shrinkWrap: true,
-                    children: _history.map(buildUser).toList(),
-                  );
-                } else {
-                  print('wait....');
-                  return Center(child: CircularProgressIndicator());
-                }
-              }),
+                    return ListView(
+                      reverse: true,
+                      shrinkWrap: true,
+                      children: _history.map(buildUser).toList(),
+                    );
+                  } else {
+                    print('wait....');
+                    return Center(child: CircularProgressIndicator());
+                  }
+                }),
+          ),
         ],
       ),
     );
   }
 
   Widget buildUser(History _history) => Container(
-      height: 25,
-      child: Center(
+
+          // height: 50,
+          child: Center(
         child: Column(
           children: [
-            Text(
-              '${_history.text}',
-              style: TextStyle(
-                color: Colors.black,
+            Container(
+              width: 700,
+              decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
+              child: Center(
+                child: Text(
+                  '${_history.text}',
+                  overflow: TextOverflow.fade,
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
               ),
             ),
           ],
@@ -90,6 +100,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Stream<List<History>> readUser() => FirebaseFirestore.instance
       .collection('history')
+      .orderBy('timestamp', descending: false)
       .snapshots()
       .map((snapshot) =>
           snapshot.docs.map((doc) => History.fromJson(doc.data())).toList());
@@ -107,17 +118,20 @@ class History {
   String? id;
   String? email;
   final String? text;
+  Timestamp? timestamp;
 
   History({
     this.id = '',
     this.email,
     this.text,
+    this.timestamp,
   });
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'email': email,
         'text': text,
+        'timestamp': timestamp,
       };
 
   factory History.fromJson(Map<String, dynamic> json) {

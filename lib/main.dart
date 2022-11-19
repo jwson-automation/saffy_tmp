@@ -10,6 +10,7 @@ Future<void> main() async {
     appId: '1:998343576751:web:a2834f34b924a198fcd85a',
     messagingSenderId: '998343576751',
     projectId: 'ssafy-mascot',
+    storageBucket: 'ssafy-mascot.appspot.com',
   ));
   runApp(const MyApp());
 }

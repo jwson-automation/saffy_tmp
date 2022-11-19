@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/screens/history.dart';
-import 'package:myapp/screens/upload.dart';
+import 'package:myapp/screens/_backup.dart';
+import 'package:myapp/screens/uploadWeb.dart';
 import 'package:myapp/screens/voting.dart';
 
 class BottomBar extends StatefulWidget {
@@ -18,7 +19,7 @@ class _BottomBarState extends State<BottomBar> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     const VotingPage(),
-    const UploadPage(),
+    const UploadWebPage(),
     const HistoryPage(),
   ];
 
